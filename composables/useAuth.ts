@@ -19,9 +19,9 @@ export const useAuth = () => {
       });
 
       const data = await response.json();
-      console.log("API Response:", data);  // 🔥 Debugging: See full API response
+      console.log("API Response:", data);  
 
-      if (data.success && data.data.token) {  // ✅ Correctly accessing the token now!
+      if (data.success && data.data.token) {  
         token.value = data.data.token;
         localStorage.setItem("authToken", data.data.token);
         console.log("Token saved:", data.data.token);
