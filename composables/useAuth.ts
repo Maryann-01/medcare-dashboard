@@ -1,37 +1,34 @@
-import { ref, onMounted } from "vue";
-
-export const useAuth = () => {
-  const token = ref<string | null>(null);
-
-  onMounted(() => {
-    token.value = localStorage.getItem("authToken");
-  });
-
-  const login = async (): Promise<void> => {
+// composables/useAuth.ts
+export const useAuth = (): { login: () => Promise<boolean> } => {
+  const login = async (): Promise<boolean> => {
     try {
-      const response = await fetch("https://testdrive.kompletecare.com/api/login", {
+      const response = await fetch("https://testdrive.kompletecare.com/graphql", {
         method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams({
-          email: "tester@kompletecare.com",
-          password: "password",
-        }),
+        headers: { 
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          query: `mutation { 
+            login(email: "tester@kompletecare.com", password: "password") 
+          }`
+        })
       });
 
-      const data = await response.json();
-      console.log("API Response:", data);  
+      const { data, errors } = await response.json();
+      
+      if (errors) throw new Error(errors[0].message);
+      if (!data?.login) throw new Error("No token received");
 
-      if (data.success && data.data.token) {  
-        token.value = data.data.token;
-        localStorage.setItem("authToken", data.data.token);
-        console.log("Token saved:", data.data.token);
-      } else {
-        console.error("Login failed: No token received.");
-      }
+      localStorage.setItem("authToken", data.login);
+      return true;
+      
     } catch (error) {
-      console.error("Login failed:", error);
+      console.error("Login Error:", error);
+      localStorage.removeItem("authToken");
+      return false;
     }
   };
 
-  return { token, login };
+
+  return { login };
 };
