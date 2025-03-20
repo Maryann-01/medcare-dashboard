@@ -1,4 +1,3 @@
-// composables/useAuth.ts
 export const useAuth = (): { login: () => Promise<boolean> } => {
   const login = async (): Promise<boolean> => {
     try {

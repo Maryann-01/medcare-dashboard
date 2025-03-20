@@ -1,5 +1,5 @@
 <template>
-    <div class="sidebar d-flex flex-column">
+    <div class="sidebar d-flex flex-column  ">
       <ul class="nav flex-column">
         <li v-for="(item, index) in firstGroup" :key="index" class="nav-item">
           <a
@@ -59,7 +59,7 @@ const setActive=(menuName)=>{
 </script>
 
 <style scoped>
-/* Sidebar container */
+
 *{
     padding:0;
     margin:0;
@@ -76,7 +76,7 @@ overflow-y:auto;
   box-sizing:border-box;
 }
 
-/* Sidebar logo */
+
 .logo {
   font-size: 20px;
   margin-bottom: 20px;
@@ -84,40 +84,75 @@ overflow-y:auto;
   color: white;
 }
 
-/* Menu styles */
+
 .nav {
   padding: 0;
 }
 
 .nav-item {
-  margin: 6px 0;
+  margin: 8px 0;
 }
 
-/* Sidebar links */
+
 .nav-link {
   color: #A0A0A0;
   font-family: Product Sans;
 font-size: 16px;
+font-weight:400;
   text-decoration: none;
   padding-left:30px;
 }
 
-/* Active menu item */
+
 .active {
   background: #2A36A4 !important;
  height:45px;
   color:white;
 }
 
-/* Sidebar icons */
+
 .icon {
   width: 15px;
 height: 15px;
 }
 
-/* Separator line */
+
 .separator {
   margin: 5px 0;
   border: 1px solid #DFE0EB
 }
+
+@media (max-width: 768px) {
+  .sidebar {
+    width: 64px; 
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .nav-link {
+    justify-content: center;
+    padding-left: 0 !important;
+  }
+
+  .nav-link span {
+    display: none; 
+  }
+
+  .active {
+    height: auto; 
+    padding: 0.5rem 0;
+  }
+
+  .separator {
+    margin: 5px 10px; 
+  }
+}
+
+
 </style>
+
+
+
+
+
+

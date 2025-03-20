@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useAuth } from '@/composables/useAuth'
 import { ref } from 'vue'
-import Sidebar from '@/components/Sidebar.vue' // Adjust path as needed
+import Sidebar from '@/components/Sidebar.vue' 
 
 const { login } = useAuth()
 const authState = ref<'loading'|'authenticated'|'error'>('loading')
@@ -38,7 +38,7 @@ handleLogin()
 
   <div v-else class="loading-state">
     <div class="spinner-border text-primary"></div>
-    <p class="mt-2">Initializing application...</p>
+    <p class="mt-2">Starting application...</p>
   </div>
 </template>
 
@@ -64,12 +64,9 @@ handleLogin()
   position: relative; 
 }
   
-/* Responsive adjustments */
+
 @media (max-width: 768px) {
-  .sidebar {
-    flex: 0 0 60px;
-    margin-left: -250px;
-  }
+  
   
   .content {
     margin-left: 0;
