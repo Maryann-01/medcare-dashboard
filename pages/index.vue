@@ -34,13 +34,16 @@ const toggleMriOptions = () => {
 };
 
 const submitMedicalRecord = async () => {
-  // Implement your submission logic here
+
   console.log('Submitting:', {
     tests: selectedTests.value,
     ct: ctSpecification.value,
     mri: mriSpecification.value
   });
 };
+
+
+
 </script>
 
 <template>
@@ -53,10 +56,10 @@ const submitMedicalRecord = async () => {
       </div>
     </nav>
     <div class="main-header mb-4">
-        <h2>Update Patient Medical Record</h2>
-        <p>Click the tabs to view and edit patient medical details</p>
-      </div>
-    <main class="px-3">
+      <h2>Update Patient Medical Record</h2>
+      <p>Click the tabs to view and edit patient medical details</p>
+    </div>
+    <main class="mx-3">
       <div v-if="loading" class="text-center py-5">
         <div class="spinner-border text-primary" role="status">
           <span class="visually-hidden">Loading...</span>
@@ -64,40 +67,24 @@ const submitMedicalRecord = async () => {
         <p class="mt-2">Loading medical investigations...</p>
       </div>
 
-    
+
       <div v-else-if="error" class="alert alert-danger mx-auto" style="max-width: 600px">
         <h4 class="alert-heading">Error Loading Data</h4>
         <p>{{ error.message }}</p>
       </div>
 
-      
+
       <template v-else>
-        <div 
-          v-for="(category, index) in groupedInvestigations" 
-          :key="index" 
-          class="category-section mb-5 pb-4"
-          :class="{ 'border-bottom': index < groupedInvestigations.length - 1 }"
-        >
-          <h4 class="category-title mb-4">{{ category.title }}</h4>
+        <div v-for="(category, index) in groupedInvestigations" :key="index" class="category-section mb-5 pb-4"
+          :class="{ 'border-bottom': index < groupedInvestigations.length - 1 }">
+          <h4 class="category-title mb-1">{{ category.title }}</h4>
           <div class="row g-4">
-            <div 
-              v-for="test in category.investigations" 
-              :key="test.id"
-              class="col-md-3 col-6"
-            >
+            <div v-for="test in category.investigations" :key="test.id" class="col-md-3 col-6">
               <div class="">
-                <div class="card-body d-flex align-items-center p-3">
-                  <input
-                    type="checkbox"
-                    :id="`test-${test.id}`"
-                    :value="test.id"
-                    v-model="selectedTests"
-                    class="form-check-input me-3"
-                  />
-                  <label 
-                    :for="`test-${test.id}`" 
-                    class="form-check-label flex-grow-1 investigation-label m-0"
-                  >
+                <div class="form-check d-flex align-items-center p-3 g-1">
+                  <input type="checkbox" :id="`test-${test.id}`" :value="test.id" v-model="selectedTests"
+                    class="form-check-input me-1" />
+                  <label :for="`test-${test.id}`" class="form-check-label investigation-label m-0">
                     {{ test.title }}
                   </label>
                 </div>
@@ -106,71 +93,85 @@ const submitMedicalRecord = async () => {
           </div>
         </div>
 
-     
-        <div class="special-scans-section mt-4 p-3 bg-light rounded">
+
+        <div class="special-scans-section mt-4 p-3 rounded">
           <div class="row g-3">
             <!-- CT Scan -->
             <div class="col-md-6">
-              <div class="scan-group">
-                <h5 class="scan-title">CT Scan</h5>
-                <div class="scan-input" @click="toggleCtOptions">
-                  <div class="d-flex align-items-center gap-1">
-                    <i class="bi bi-asterisk text-danger"></i>
-                    <span class="placeholder">Specify</span>
-                  </div>
-                  <i class="bi bi-chevron-down"></i>
+              <div class="scan-group position-relative">
+                <h5 class="scan-title mb-2">CT Scan</h5>
+
+                <!-- Clickable Header -->
+                <div class="scan-input border rounded bg-light p-2 d-flex justify-content-between align-items-center"
+                  @click="showCtOptions = !showCtOptions" :class="{ 'border-primary': showCtOptions }">
+                  <span class="text-muted">
+                    {{ ctSpecification || '* Specify' }}
+                  </span>
+                  <i class="bi bi-chevron-down" :class="{ 'rotate-180': showCtOptions }"></i>
                 </div>
-                <div v-if="showCtOptions" class="scan-options mt-2">
-                  <input
-                    type="text"
-                    v-model="ctSpecification"
-                    placeholder="Enter CT scan details"
-                    class="form-control form-control-sm"
-                  >
+
+                <!-- Dropdown Input -->
+                <div v-if="showCtOptions" class="scan-options border rounded bg-white mt-1 p-2 position-absolute w-100">
+                  <input type="text" v-model="ctSpecification" placeholder="Enter CT scan details" class="form-control"
+                    @keyup.enter="showCtOptions = false" @click.stop>
                 </div>
               </div>
             </div>
 
-            
+            <!-- MRI Scan -->
             <div class="col-md-6">
-              <div class="scan-group">
-                <h5 class="scan-title">MRI Scan</h5>
-                <div class="scan-input" @click="toggleMriOptions">
-                  <div class="d-flex align-items-center gap-1">
-                    <i class="bi bi-asterisk text-danger"></i>
-                    <span class="placeholder">Specify</span>
-                  </div>
-                  <i class="bi bi-chevron-down"></i>
+              <div class="scan-group position-relative">
+                <h5 class="scan-title mb-2">MRI Scan</h5>
+
+                <!-- Clickable Header -->
+                <div class="scan-input border rounded bg-light p-2 d-flex justify-content-between align-items-center"
+                  @click="showMriOptions = !showMriOptions" :class="{ 'border-primary': showMriOptions }">
+                  <span class="text-muted">
+                    {{ mriSpecification || '*Specify' }}
+                  </span>
+                  <i class="bi bi-chevron-down" :class="{ 'rotate-180': showMriOptions }"></i>
                 </div>
-                <div v-if="showMriOptions" class="scan-options mt-2">
-                  <input
-                    type="text"
-                    v-model="mriSpecification"
-                    placeholder="Enter MRI scan details"
-                    class="form-control form-control-sm"
-                  >
+
+                <!-- Dropdown Input -->
+                <div v-if="showMriOptions"
+                  class="scan-options border rounded bg-white mt-1 p-2 position-absolute w-100">
+                  <input type="text" v-model="mriSpecification" placeholder="Enter MRI scan details"
+                    class="form-control" @keyup.enter="showMriOptions = false" @click.stop>
                 </div>
               </div>
             </div>
           </div>
         </div>
-
-        <div class=" bg-white py-4 border-top">
+        <div class="py-4 border-top">
           <div class="text-end">
-            <button 
-              class="btn btn-primary px-5"
-              :disabled="selectedTests.length === 0"
-              @click="submitMedicalRecord"
-            >
-              <span v-if="selectedTests.length">Save & Send ({{ selectedTests.length }} selected)</span>
-              <span v-else>Save & Send</span>
+            <button class="btn btn-primary px-2" :disabled="selectedTests.length === 0" @click="submitMedicalRecord">
+              <span v-if="selectedTests.length">Save and Send ({{ selectedTests.length }} )</span>
+              <span v-else>Save and Send</span>
             </button>
           </div>
         </div>
       </template>
     </main>
   </div>
+<!-- Success Modal -->
+<div class="modal fade" id="successModal" tabindex="-1" aria-hidden="true" ref="successModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Success!</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Medical record submitted successfully!
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
 </template>
+
 
 <style scoped>
 .container-fluid {
@@ -178,29 +179,33 @@ const submitMedicalRecord = async () => {
   min-height: 100vh;
 }
 
-.main-header>h2{
-  font-family: Avenir,"Poppins";
-font-weight: 900;
-font-size: 2rem;
-color:#382F90;
+.main-header>h2 {
+  font-family: "Poppins", Avenir;
+  font-weight: 800;
+  font-size: 2rem;
+  color: #382F90;
 }
-.main-header>p{
+
+.main-header>p {
   font-family: Avenir, "Poppins";
-font-weight: 400;
-color: #9FA2B4;
-font-size: 0.9rem;
-letter-spacing: 0.3px;
+  font-weight: 400;
+  color: #9FA2B4;
+  font-size: 0.9rem;
+  letter-spacing: 0.3px;
 }
+
 main {
   background-color: white;
   border-radius: 5px;
   padding: 2rem;
   margin: 0.4rem;
-  /* box-shadow: 0 2px 8px rgba(0,0,0,0.05); */
+  /* border:2px solid red; */
+  padding: 3rem 6rem;
 }
+
 .category-section:not(:last-child) {
   border-bottom: 2px solid #e0e0e0;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 }
 
 .investigation-card {
@@ -208,22 +213,22 @@ main {
   border: 1px solid #e0e0e0;
 }
 
-.investigation-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
 
 .category-title {
- font-family: Avenir, "Poppins";
-font-weight: 700;
-font-size: 1.1rem;
-color: #382F90;
+  font-family: "Poppins", Avenir;
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #382F90;
 }
-.form-check-label{
+
+.form-check-label {
   font-family: Lato;
-font-weight: 600;
-font-size: 0.85rem;
+  font-weight: 600;
+  font-size: 0.87rem;
+  padding-top:5px;
+  /* border:2px solid red; */
 }
+
 .sticky-bottom {
   /* position: sticky; */
   bottom: 0;
@@ -255,25 +260,61 @@ font-size: 0.85rem;
 }
 
 .scan-title {
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: #2a36a4;
-  margin-bottom: 0.5rem;
+  font-family: Lato;
+font-weight: 700;
+font-size: 0.85rem;
 }
 
-.bi-asterisk {
-  font-size: 0.7rem;
-  vertical-align: middle;
+.btn {
+  background-color: #382F90;
+  border:none;
+}
+
+.btn:disabled,
+.btn[disabled] {
+  opacity: 1 !important;
+  box-shadow: none !important;
+}
+
+.special-scans-section{
+  color:#9FA2B4;
+  font-family: Lato;
+font-weight: 700;
+font-size: 14px;
 }
 
 .bi-chevron-down {
   font-size: 0.8rem;
   transition: transform 0.2s;
+  color:#9FA2B4 !important
+}
+
+.scan-input {
+  cursor: pointer;
+  transition: all 0.2s;
+  z-index: 1;
 }
 
 .scan-options {
-  margin-top: 0.5rem;
+  z-index: 1000;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
 }
+
+.rotate-180 {
+  transform: rotate(180deg);
+  transition: transform 0.2s;
+}
+.text-muted{
+  font-family: Lato;
+font-weight: 650;
+font-size: 0.85rem;
+color:#9FA2B4;
+}
+.bi-asterisk {
+  font-size: 0.8rem;
+  vertical-align: super;
+}
+
 
 @media (max-width: 768px) {
   .col-md-6 {
